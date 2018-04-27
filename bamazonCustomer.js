@@ -92,3 +92,30 @@ function promptUserPurchase() {
     });
 };
 
+//Retrieve current inventory from database to display in console
+function displayInventory() {
+    queryStr = 'SELECT * FROM products';
+
+    connection.query(queryStr, function(err, data) {
+        if (err) throw err;
+
+        console.log('Existing Inventory: ');
+        console.log('....................\n');
+
+        var strOut = '';
+        for (var i = 0; i < data.length; i++) {
+            strOut = '';
+            strOut += 'Item ID: ' + data[i].item_id + ' // ';
+            strOut += 'Product Name: ' + data[i].product_name + ' // ';
+            strOut += 'Department Name: ' + data[i].department_name + ' // ';
+            strOut += 'Price: $' + data[i].product_price + '\n';
+
+            console.log(strOut);
+        }
+
+        console.log("----------------------------------------------------------------------\n");
+
+        //Quantity and item order prompt
+        promptUserPurchase();
+    })
+}
