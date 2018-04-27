@@ -119,3 +119,11 @@ function displayInventory() {
         promptUserPurchase();
     })
 }
+
+//Execution of application logic
+function runBamazon() {
+    displayInventory();
+}
+
+//run app
+runBamazon();
