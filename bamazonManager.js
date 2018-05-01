@@ -115,3 +115,81 @@ function displayLowInventory() {
     })
 }
 
+//function makes sure the user is inputting whole integers only
+function validateInteger(value) {
+    var integer = Number.isInteger(parseFloat(value));
+    var sign = Math.sign(value);
+
+    if (integer && (sign === 1)) {
+        return true;
+    } else {
+        return 'Please enter a whole number.';
+    }
+}
+
+//Function makes sure the user is inputting positive numbers only
+function validateNumeric(value) {
+    var number = (typeof parseFloat(value)) === 'number';
+    var positive = parseFloat(value) > 0;
+
+    if (number && positive) {
+        return true;
+    } else {
+        return 'Please enter a positive number.';
+    }
+}
+
+//function will help user add more inventory to an item
+ function addInventory() {
+
+    //prompt user to pick an item
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'item_id',
+            message: 'Please enter Item ID for for stock_count update.';
+            validate: validateInteger,
+            filter: Number
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many would you like to add?',
+            validate: vaildateInteger,
+            filter: Number
+        }
+    ]).then(function(input) {
+        var item = input.item_id;
+        var addQuantity = input.quantity;
+
+        //Query db to make sure user has the correct ID and to determine stock count
+        var queryStr = 'SELECT * FROM products WHERE ?';
+
+        connection.query(queryStr, {item_id: item}, function(err, data) {
+            if (err) throw err;
+
+            if (data.length === 0) {
+                console.log('ERROR: Invalid Item ID. Please select a valid Item ID.');
+                addInventory();
+            
+            } else {
+                var productData = data[0];
+
+                console.log('Updating Inventory...');
+
+                //Make updating query string
+                var updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productData.stock_quantity + addQuantity) + ' WHERE item_id = ' + item;
+
+                //Update the inventory
+                connection.query(updateQueryStr, function(err, data) {
+                    if (err) throw err;
+
+                    console.log('Stock count for item ID ' + item + ' has been updated to ' + (productData.stock_quantity + addQuantity) + '.');
+                    console.log("\n-------------------------------------------------------------------------\n");
+
+                    connection.end();
+                })
+            }
+        })
+    })
+ }
