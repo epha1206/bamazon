@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: '',
+    password: '4132008Eg',
     database: 'bamazon_db'
 });
 
@@ -213,12 +213,12 @@ function validateNumeric(value) {
             type: 'input',
             name: 'product_price',
             message: 'what is the price for each?',
-            validate: validateNumeric
+            validate: validateNumeric,
         },
         {
             type: 'input',
             name: 'stock_quantity',
-            message: 'How many items are in stock?'
+            message: 'How many items are in stock?',
             validate: validateInteger
         }
     ]).then(function(input) {
