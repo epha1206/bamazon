@@ -193,3 +193,58 @@ function validateNumeric(value) {
         })
     })
  }
+
+ //function will guide user to add a new product to the inventory
+ function createNewProduct() {
+
+    //Prompt the user to enter info about the new product
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'product_name',
+            message: 'Please enter the new product name.',
+        },
+        {
+            type: 'input',
+            name: 'department_name',
+            message: 'Which department does the new product belong to?',
+        },
+        {
+            type: 'input',
+            name: 'product_price',
+            message: 'what is the price for each?',
+            validate: validateNumeric
+        },
+        {
+            type: 'input',
+            name: 'stock_quantity',
+            message: 'How many items are in stock?'
+            validate: validateInteger
+        }
+    ]).then(function(input) {
+
+        console.log('Adding New Item: \n   product_name = ' + input.product_name + '\n' + '   department_name = ' + input.department_name + '\n' + '   product_price = ' + input.product_price + '\n' + '   stock_quantity = ' + input.stock_quantity);
+
+        //create insertion query string
+        var queryStr = 'INSERT INTO products SET ?';
+
+        //add the new product to the db
+        connection.query(queryStr, input, function (error, results, fields) {
+            if (error) throw error;
+
+            console.log('New product has been added to the inventory under item ID ' + results.insertId + '.');
+            console.log("\n-------------------------------------------------------------------\n");
+            
+            connection.end();
+        });
+    })
+ }
+
+ //function will run the app
+ function runBamazon() {
+
+    //prompt manager for input
+    promptManagerAction();
+ }
+
+ runBamazon();
