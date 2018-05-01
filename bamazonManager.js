@@ -3,7 +3,7 @@ var inquirer = require("inquirer");
 var mysql = require("mysql");
 
 // Connection 
-var connection = mysql.createconnection({
+var connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user: 'root',
@@ -83,3 +83,35 @@ function displayInventory() {
         connection.end();
     })
 }
+
+//Function will let you know which items are running low when they drop to 100
+function displayLowInventory() {
+
+    //Query string
+    queryStr = 'SELECT * FROM products WHERE stock_quantity < 100';
+    //Db query
+    connection.query(queryStr, function(err, data) {
+        if (err) throw err;
+
+        console.log('Low inventory items (below 100): ');
+        console.log('.............................\n');
+
+       var strOut = '';
+       for (var i = 0; i < data.length; i++) {
+           strOut = '';
+           strOut = 'Item ID: ' + data[i].item_id + ' // ';
+           strOut = 'Product Name: ' + data[i].product_name + ' // ';
+           strOut = 'Department: ' + data[i].department_name + ' // ';
+           strOut = 'Price: $' + data[i].product_price + ' // ';
+           strOut = "Quantity: " + data[i].stock_quantity + '\n';
+
+           console.log(strOut);
+       } 
+
+       console.log("---------------------------------------------------\n");
+
+       //end
+       connection.end();
+    })
+}
+
